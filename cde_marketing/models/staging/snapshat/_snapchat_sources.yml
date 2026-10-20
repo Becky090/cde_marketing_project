@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: snapchat
+    description: >
+      Raw Snapchat Ads export, loaded as-is into the bronze layer. Ad group and ad tables are
+      history tables, so an id can appear more than once (one row per version).
+    database: "{{ env_var('BRONZE_CATALOG', target.catalog) }}"
+    schema: "{{ env_var('BRONZE_SCHEMA', 'bronze') }}"
+    tables:
+      - name: snapchat_ads_stat
+        identifier: snapchat_ads_stat
+        description: Daily performance per ad and country. Currency is on the row. The ad key is called ad_detail_id.
+      - name: snapchat_new_ads
+        identifier: snapchat_new_ads
+        description: New ads. Links each ad to its ad group.
+      - name: snapchat_adgroup
+        identifier: snapchat_adgroup
+        description: Ad group history (several versions per ad group are possible). Links each ad group to its campaign.
+      - name: snapchat_campaign
+        identifier: snapchat_campaign
+        description: Campaign history (id, account and name).

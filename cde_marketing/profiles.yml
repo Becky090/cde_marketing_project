@@ -1,0 +1,60 @@
+cde_marketing:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+
+  meta:
+    base: &base
+      type: databricks
+      threads: 4
+    base_auth: &base_auth
+      <<: *base
+      auth_type: oauth
+      client_id: "{{ env_var('DBX_ID_APPLICATION_ID') }}"
+      client_secret: "{{ env_var('DBX_SECRET') }}"
+      connect_retries: 3
+      retry_all: true
+
+  outputs:
+    dev: &dev
+      <<: *base
+      host: "dbc-81b1a169-892b.cloud.databricks.com"
+      http_path: "{{ env_var('DEV_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_PAT_TOKEN') }}"
+      catalog: "{{ env_var('DEV_CATALOG') }}"
+      schema: "{{ env_var('DEV_SCHEMA') }}"
+
+    ci: &ci
+      <<: *base_auth
+      host: "{{ env_var('DBX_HOST') }}"
+      http_path: "{{ env_var('DBX_HTTP_PATH') }}"
+      catalog: "{{ env_var('CI_CATALOG') }}"
+      schema: "{{ env_var('CI_SCHEMA') }}"
+
+    staging: &staging
+      <<: *base_auth
+      host: "{{ env_var('DBX_HOST') }}"
+      http_path: "{{ env_var('DBX_HTTP_PATH') }}"
+      catalog: "{{ env_var('STG_CATALOG') }}"
+      schema: "{{ env_var('STG_SCHEMA') }}"
+
+    production: &production
+      <<: *base_auth
+      host: "{{ env_var('DBX_HOST') }}"
+      http_path: "{{ env_var('DBX_HTTP_PATH') }}"
+      catalog: "{{ env_var('PROD_CATALOG') }}"
+      schema: "{{ env_var('PROD_SCHEMA') }}"
+
+elementary:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  outputs:
+    dev:
+      <<: *dev
+      schema: "{{ env_var('DEV_SCHEMA') }}_elementary"
+    ci:
+      <<: *ci
+      schema: "{{ env_var('CI_SCHEMA') }}_elementary"
+    staging:
+      <<: *staging
+      schema: "{{ env_var('STG_SCHEMA') }}_elementary"
+    production:
+      <<: *production
+      schema: "{{ env_var('PROD_SCHEMA') }}_elementary"

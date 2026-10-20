@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  # ------------------------------------------------------------ Facebook
+  - name: stg_facebook_ads_stats
+    description: "Cleaned Facebook daily ad performance. Grain: one row per ad per day."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ad_id, report_date]
+    columns:
+      - name: ad_id
+        description: Facebook ad id, cast to string so it can be unioned with Snapchat UUIDs.
+        data_tests: [not_null]
+      - name: account_id
+        description: Facebook ad account id. Used to look up the currency.
+        data_tests: [not_null]
+      - name: report_date
+        description: Calendar date the performance relates to.
+        data_tests: [not_null]
+      - name: spend
+        description: Amount spent in the ad account currency (not converted).
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: impressions
+        description: Number of impressions. Null when the platform did not report a value.
+      
+      - name: clicks
+        description: Number of clicks. Null when the platform did not report a value.
+       
+
+  - name: stg_facebook_new_ads
+    description: "Latest version of each Facebook ad. Grain: one row per ad."
+    columns:
+      - name: ad_id
+        data_tests: [unique, not_null]
+      - name: campaign_id
+        data_tests: [not_null]
+
+  - name: stg_facebook_campaign
+    description: "Latest version of each Facebook campaign. Grain: one row per campaign."
+    columns:
+      - name: campaign_id
+        data_tests: [unique, not_null]
+      - name: campaign_name
+        data_tests: [not_null]
+
+  - name: stg_facebook_accounts
+    description: "Latest version of each Facebook ad account with its currency. Grain: one row per account."
+    columns:
+      - name: account_id
+        data_tests: [unique, not_null]
+      - name: currency_code
+        description: ISO currency code of the account (uppercase).
+        
+
+  # ------------------------------------------------------------ Snapchat
+  - name: stg_snapchat_ads_stat
+    description: "Cleaned Snapchat daily ad performance. Grain: one row per ad per day per country."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [ad_id, report_date, country_code]
+    columns:
+      - name: ad_id
+        description: Snapchat ad id (called ad_detail_id in the source), as a string.
+        data_tests: [not_null]
+      - name: currency_code
+        description: ISO currency code the spend is reported in.
+      
+      - name: country_code
+        description: Two-letter country code of the delivery (uppercase).
+     
+      - name: report_date
+        data_tests: [not_null]
+      - name: spend
+        description: Amount spent in the row currency (not converted).
+        
+      - name: impressions
+        description: Number of impressions. Null when the platform did not report a value.
+        
+        
+      - name: clicks
+        description: Number of clicks. Null when the platform did not report a value.
+       
+
+  - name: stg_snapchat_new_ads
+    description: "Latest version of each Snapchat ad. Grain: one row per ad."
+    columns:
+      - name: ad_id
+        data_tests: [unique, not_null]
+      - name: ad_group_id
+        data_tests: [not_null]
+
+  - name: stg_snapchat_adgroup
+    description: >
+      Latest version of each Snapchat ad group. Grain: one row per ad group.
+      The raw history table has several versions for some ad groups; this model keeps the newest.
+    columns:
+      - name: ad_group_id
+        data_tests: [unique, not_null]
+      - name: campaign_id
+        data_tests: [not_null]
+
+  - name: stg_snapchat_campaign
+    description: "Snapchat campaigns. Grain: one row per campaign."
+    columns:
+      - name: campaign_id
+        data_tests: [unique, not_null]
+      - name: campaign_name
+        data_tests: [not_null]

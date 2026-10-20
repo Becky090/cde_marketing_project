@@ -1,0 +1,22 @@
+version: 2
+
+seeds:
+  - name: currency_rates
+    description: >
+      Flat conversion rates to EUR, used to report spend in one currency.
+      The USD rate is a PLACEHOLDER: replace it with the rate your finance team uses.
+      A single flat rate keeps the model simple; a daily rate table would be the next step.
+    config:
+      column_types:
+        currency_code: string
+        rate_to_eur: decimal(18, 6)
+    columns:
+      - name: currency_code
+        data_tests: [unique, not_null]
+      - name: rate_to_eur
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: false

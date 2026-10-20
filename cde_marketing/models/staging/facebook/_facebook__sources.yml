@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: facebook
+    description: "Facebook Ads data from the CDE Marketing project."
+    database: bronze_production
+    schema: cdc_staging
+    tables:
+      - name: facebook_ads_stats
+        description: "Daily ad-level performance metrics (spend, impressions, clicks)."
+      - name: facebook_new_ads
+        description: "Mapping of ads to campaigns."
+      - name: facebook_campaign
+        description: "Campaign metadata including campaign names."
+      - name: facebook_account
+        description: "Account metadata including currency."
+
+
