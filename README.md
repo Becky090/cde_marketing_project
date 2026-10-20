@@ -218,4 +218,7 @@ dbt test
   - `accepted_values` for currency codes (`['EUR', 'USD']`).
 - **Elementary Data Observability**:
   - Monitored by the `elementary` package for automated anomaly detection, schema change tracking, and test reporting.
+** Screenshots of Elementary, Dbt docs and databricks view<img width="543" height="823" alt="Screenshot 2026-10-20 at 16 33 02" src="https://github.com/user-attachments/assets/a9a702aa-76b2-4ae0-b982-811628e7d390" />
+<img width="1512" height="791" alt="Screenshot 2026-10-20 at 16 32 30" src="https://github.com/user-attachments/assets/a22c929b-feea-42b0-87a9-ad11a345319d" />
+<img width="1512" height="791" alt="Screenshot 2026-10-20 at 16 32 09" src="https://github.com/user-attachments/assets/6afeadc2-10e8-4a3e-a95b-7c0d2b925c0e" />
 
